@@ -40,6 +40,7 @@ configure_file(
 tienda_sources = [
   '__init__.py',
   'main.py',
+  'db/database.py',
   'widgets/dialogs.py',
   'view/login.py',
   'view/window.py',
