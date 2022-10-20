@@ -17,13 +17,17 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+import datetime
 from gi.repository import Adw
 from gi.repository import Gtk
+from .database import *
 
 @Gtk.Template(resource_path='/com/github/ffrancoc/Tienda/gtk/window.ui')
 class TiendaWindow(Adw.ApplicationWindow):
     __gtype_name__ = 'TiendaWindow'
 
+    # Widgets de la interfaz
+    # GUI widgets
     lbl_currentuser = Gtk.Template.Child()
 
     # Sobreescribir el evento para cerrar la ventana
@@ -33,5 +37,14 @@ class TiendaWindow(Adw.ApplicationWindow):
         app.show_login_window()
         return False
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, application:Gtk.Application, user:User):
+        super().__init__(application=application)
+
+        # Mostrar nombre de usuario logueado
+        # Show username of user logged in
+        self.lbl_currentuser.set_label(user.username)
+
+        # Actualizar fecha y hora de ultima sesion
+        # Update last session datetime
+        user.last_session = datetime.datetime.now()
+        session.commit()

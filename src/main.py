@@ -26,7 +26,7 @@ gi.require_version('Adw', '1')
 from gi.repository import Gtk, Gio, Adw
 from .login import TiendaLogin
 from .window import TiendaWindow
-
+from .database import User
 
 class TiendaApplication(Adw.Application):
 
@@ -40,9 +40,9 @@ class TiendaApplication(Adw.Application):
         win = TiendaLogin(application=self)
         win.present()
 
-    def show_main_window(self):
+    def show_main_window(self, user:User):
         self.__remove_current_window()
-        win = TiendaWindow(application=self)
+        win = TiendaWindow(application=self, user=user)
         win.present()
 
     def __init__(self):
