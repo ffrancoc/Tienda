@@ -1,0 +1,54 @@
+using Gtk 4.0;
+using Adw 1;
+
+template TiendaLogin : Adw.ApplicationWindow {
+  title: "";
+  default-width: 400;
+  default-height: 550;
+  resizable: false;
+
+  Box {
+    orientation: vertical;
+
+    HeaderBar header_bar {
+      styles ["flat",]
+    }
+
+    Adw.StatusPage status_page {
+      icon-name: "user-home-symbolic";
+      title: "Tienda";
+      description: _("Simple Inventory Management System");
+
+      Adw.Clamp {
+        maximum-size: 300;
+
+        Box {
+          orientation: vertical;
+          spacing: 5;
+
+          Adw.PreferencesGroup {
+            Adw.EntryRow entry_username{
+              title: _("Username");
+            }
+
+            Adw.PasswordEntryRow entry_password {
+              title: _("Password");
+            }
+          }
+
+          Button {
+            label: _("Login");
+            clicked =>  on_login();
+            styles [
+              "suggested-action",
+            ]
+          }
+
+        }
+
+      }
+
+    }
+  }
+}
+

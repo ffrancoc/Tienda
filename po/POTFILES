@@ -1,0 +1,6 @@
+data/com.github.ffrancoc.Tienda.desktop.in
+data/com.github.ffrancoc.Tienda.appdata.xml.in
+data/com.github.ffrancoc.Tienda.gschema.xml
+src/main.py
+src/window.py
+src/window.ui

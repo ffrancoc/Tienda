@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=tienda
+Exec=tienda
+Icon=com.github.ffrancoc.Tienda
+Terminal=false
+Type=Application
+Categories=GTK;
+StartupNotify=true

@@ -1,0 +1,70 @@
+using Gtk 4.0;
+using Adw 1;
+
+template TiendaWindow : Adw.ApplicationWindow {
+  title: "";
+  default-width: 800;
+  default-height: 600;
+
+  Box {
+    orientation: horizontal;
+
+    Box {
+      orientation: vertical;
+
+      Button {
+        icon-name: "user-home-symbolic";
+        tooltip-text: _("Home");
+      }
+
+      styles ["sidebar-options",]
+    }
+
+    Box {
+      orientation: vertical;
+      hexpand: true;
+
+      HeaderBar header_bar {
+
+        [start]
+        Label lbl_currentoption {
+          label: 'home';
+          styles ["heading",]
+        }
+
+        [end]
+        MenuButton {
+          icon-name: "open-menu-symbolic";
+          menu-model: primary_menu;
+        }
+
+        [end]
+        Label lbl_currentuser {
+          label: 'admin';
+          styles ["heading",]
+        }
+
+        styles ["flat",]
+      }
+    }
+  }
+}
+
+menu primary_menu {
+  section {
+    item {
+      label: _("_Preferences");
+      action: "app.preferences";
+    }
+
+    item {
+      label: _("_Keyboard Shortcuts");
+      action: "win.show-help-overlay";
+    }
+
+    item {
+      label: _("_About Tienda");
+      action: "app.about";
+    }
+  }
+}
