@@ -7,6 +7,8 @@ blueprints = custom_target('blueprints',
     'gtk/help-overlay.blp',
     'gtk/login.blp',
     'gtk/window.blp',
+    'gtk/home-view.blp',
+    'gtk/user-view.blp',
   ),
   output: '.',
   command: [find_program('blueprint-compiler'), 'batch-compile', '@OUTPUT@', '@CURRENT_SOURCE_DIR@', '@INPUT@'],
@@ -44,6 +46,8 @@ tienda_sources = [
   'widgets/dialogs.py',
   'view/login.py',
   'view/window.py',
+  'view/home.py',
+  'view/user.py',
 ]
 
 install_data(tienda_sources, install_dir: moduledir)
