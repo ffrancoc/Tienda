@@ -21,6 +21,8 @@ import datetime
 from gi.repository import Adw
 from gi.repository import Gtk
 from .database import *
+from .home import TiendaHomeView
+from .user import TiendaUserView
 
 @Gtk.Template(resource_path='/com/github/ffrancoc/Tienda/gtk/window.ui')
 class TiendaWindow(Adw.ApplicationWindow):
@@ -28,7 +30,32 @@ class TiendaWindow(Adw.ApplicationWindow):
 
     # Widgets de la interfaz
     # GUI widgets
-    lbl_currentuser = Gtk.Template.Child()
+    btn_home          = Gtk.Template.Child()
+    btn_users         = Gtk.Template.Child()
+    lbl_currentuser   = Gtk.Template.Child()
+    stack_view        = Gtk.Template.Child()
+
+
+    # Función para mostrar la vista home
+    # Function to show home view
+    def on_show_home_view(self, button, n_press, x, y):
+        self.stack_view.set_visible_child_name('home-view')
+        # Eliminar los estilos css del botón
+        # Delete css styles from button
+        self.btn_home.get_style_context().add_class('sidebar-button-selected')
+        self.btn_users.get_style_context().remove_class('sidebar-button-selected')
+
+
+    # Función para mostrar la vista usuario
+    # Function to show user view
+    def on_show_user_view(self, button, n_press, x, y):
+        self.stack_view.set_visible_child_name('user-view')
+        self.user_view.init()
+        # Eliminar los estilos css del botón
+        # Delete css styles from button
+        self.btn_users.get_style_context().add_class('sidebar-button-selected')
+        self.btn_home.get_style_context().remove_class('sidebar-button-selected')
+
 
     # Sobreescribir el evento para cerrar la ventana
     # Override close window event
@@ -37,8 +64,19 @@ class TiendaWindow(Adw.ApplicationWindow):
         app.show_login_window()
         return False
 
+
     def __init__(self, application:Gtk.Application, user:User):
         super().__init__(application=application)
+
+        # Agregar controlladores a los botones
+        # Add button's controller
+        home_controller = Gtk.GestureClick()
+        home_controller.connect('pressed', self.on_show_home_view)
+        self.btn_home.add_controller(home_controller)
+
+        user_controller = Gtk.GestureClick()
+        user_controller.connect('pressed', self.on_show_user_view)
+        self.btn_users.add_controller(user_controller)
 
         # Mostrar nombre de usuario logueado
         # Show username of user logged in
@@ -48,3 +86,15 @@ class TiendaWindow(Adw.ApplicationWindow):
         # Update last session datetime
         user.last_session = datetime.datetime.now()
         session.commit()
+
+        # Creando las vistas
+        # Creating the views
+        self.home_view = TiendaHomeView()
+        self.user_view = TiendaUserView()
+
+        # Agregando las vistas al contenedor
+        # Adding the views to container
+        self.stack_view.add_named(self.home_view, 'home-view')
+        self.btn_home.get_style_context().add_class('sidebar-button-selected')
+        self.stack_view.add_named(self.user_view, 'user-view')
+            
