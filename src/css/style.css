@@ -1,4 +1,21 @@
 .sidebar-options {
-  background-color: #1c71d8;
+  background: rgb(26,95,180);
+  background: linear-gradient(0deg, rgba(26,95,180,1) 0%, rgba(28,113,216,1) 60%, rgba(53,132,228,1) 100%);
   color: #fff;
+}
+
+.sidebar-button {
+  padding-top: 10px;
+  padding-left: 20px;
+  padding-bottom: 10px;
+  padding-right: 20px;
+}
+
+.sidebar-button:hover {
+  background-color: #99c1f1;
+}
+
+.sidebar-button-selected {
+  border-left: 8px solid;
+  border-color: #fff;
 }
