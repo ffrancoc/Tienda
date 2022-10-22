@@ -1,0 +1,82 @@
+using Gtk 4.0;
+using Adw 1;
+
+template TiendaUserView : Gtk.Box{
+  orientation: vertical;
+  margin-end: 10;
+  margin-bottom: 10;
+  margin-start: 10;
+
+  CenterBox {
+    orientation: horizontal;
+    margin-top: 10;
+    margin-end: 10;
+    margin-start: 10;
+
+    [start]
+    Box {
+    orientation: horizontal;
+
+    Button {
+      icon-name: "list-add-symbolic";
+      tooltip-text: _("Add user");
+    }
+
+    Button {
+      icon-name: "document-edit-symbolic";
+      tooltip-text: _("Edit user");
+    }
+
+    Button {
+      icon-name: "user-trash-symbolic";
+      tooltip-text: _("Remove user");
+      }
+      styles ["linked"]
+    }
+
+    [end]
+    Box {
+      orientation: horizontal;
+
+      Button {
+        icon-name: "document-open-symbolic";
+        tooltip-text: _("Import users");
+      }
+
+      Button {
+        icon-name: "view-refresh-symbolic";
+        tooltip-text: _("Reload users");
+        clicked => on_reload_treeview();
+      }
+
+      styles ["linked"]
+    }
+  }
+
+  Separator {
+        orientation: horizontal;
+        margin-top: 10;
+        margin-bottom: 5;
+    }
+
+  ScrolledWindow {
+    vexpand: true;
+    TreeView treeview{}
+  }
+
+  Separator {
+      orientation: horizontal;
+      margin-top: 5;
+      margin-bottom: 5;
+  }
+
+  Label lbl_treeview_info {
+    xalign: 0;
+    margin-end: 10;
+    margin-bottom: 10;
+    margin-start: 10;
+    styles ["caption-heading"]
+  }
+  styles ["card"]
+}
+
