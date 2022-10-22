@@ -9,29 +9,33 @@ template TiendaWindow : Adw.ApplicationWindow {
   Box {
     orientation: horizontal;
 
+
     Box {
       orientation: vertical;
 
-      Button {
+      Adw.ButtonContent btn_home{
         icon-name: "user-home-symbolic";
+        label: _("Home");
         tooltip-text: _("Home");
+        styles ["sidebar-button"]
       }
 
-      styles ["sidebar-options",]
+      Adw.ButtonContent btn_users{
+        icon-name: "system-users-symbolic";
+        tooltip-text: _("Users");
+        label: _("Users");
+        styles ["sidebar-button"]
+      }
+      styles ["sidebar-options"]
     }
+
 
     Box {
       orientation: vertical;
+      width-request: 300;
       hexpand: true;
 
       HeaderBar header_bar {
-
-        [start]
-        Label lbl_currentoption {
-          label: 'home';
-          styles ["heading",]
-        }
-
         [end]
         MenuButton {
           icon-name: "open-menu-symbolic";
@@ -45,6 +49,12 @@ template TiendaWindow : Adw.ApplicationWindow {
 
         styles ["flat",]
       }
+
+      Stack stack_view{
+        vexpand: true;
+        transition-type: slide_up_down;
+      }
+
     }
   }
 }
