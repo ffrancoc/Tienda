@@ -45,6 +45,9 @@ class TiendaApplication(Adw.Application):
         win = TiendaWindow(application=self, user=user)
         win.present()
 
+    def close_app(self):
+        self.quit()
+
     def __init__(self):
         super().__init__(application_id='com.github.ffrancoc.Tienda',
                          flags=Gio.ApplicationFlags.FLAGS_NONE)
@@ -72,10 +75,10 @@ class TiendaApplication(Adw.Application):
         about = Adw.AboutWindow(transient_for=self.props.active_window,
                                 application_name='tienda',
                                 application_icon='com.github.ffrancoc.Tienda',
-                                developer_name='Francisco Curin',
+                                developer_name='Francisco Curín',
                                 version='0.1.0',
-                                developers=['Francisco Curin'],
-                                copyright='© 2022 Francisco Curin')
+                                developers=['Francisco Curín'],
+                                copyright='© 2022 Francisco Curín')
         about.present()
 
     def on_preferences_action(self, widget, _):
