@@ -6,56 +6,62 @@ template TiendaWindow : Adw.ApplicationWindow {
   default-width: 800;
   default-height: 600;
 
-  Box {
-    orientation: horizontal;
+  Adw.Flap flap {
+    flap: ScrolledWindow {
+      width-request: 200;
 
-
-    Box {
-      orientation: vertical;
-
-      Adw.ButtonContent btn_home{
-        icon-name: "user-home-symbolic";
-        label: _("Home");
-        tooltip-text: _("Home");
-        styles ["sidebar-button"]
-      }
-
-      Adw.ButtonContent btn_users{
-        icon-name: "system-users-symbolic";
-        tooltip-text: _("Users");
-        label: _("Users");
-        styles ["sidebar-button"]
-      }
-      styles ["sidebar-options"]
-    }
-
-
-    Box {
-      orientation: vertical;
-      width-request: 300;
-      hexpand: true;
-
-      HeaderBar header_bar {
-        [end]
-        MenuButton {
-          icon-name: "open-menu-symbolic";
-          menu-model: primary_menu;
+      child: ListBox {
+        Adw.ActionRow btn_home{
+          icon-name: "user-home-symbolic";
+          title: _("Home");
         }
 
-        [end]
-        Label lbl_currentuser {
-          styles ["heading",]
+        Adw.ActionRow btn_users{
+          icon-name: "system-users-symbolic";
+          title: _("Users");
         }
 
-        styles ["flat",]
-      }
+        styles ["sidebar"]
+      };
+    };
 
-      Stack stack_view{
-        vexpand: true;
-        transition-type: slide_up_down;
-      }
+    content: Box {
+        orientation: vertical;
+        width-request: 400;
+        hexpand: true;
 
-    }
+        HeaderBar header_bar {
+          show-title-buttons: false;
+
+          [start]
+          Button btn_menu{
+            icon-name: "open-menu-symbolic";
+            tooltip-text: _("Show menu");
+            clicked => on_show_sidebar();
+          }
+
+          [end]
+          MenuButton {
+            menu-model: primary_menu;
+            child: Adw.Avatar {
+              size: 24;
+            };
+            styles ["flat"]
+          }
+
+          [end]
+          Label lbl_currentuser {
+            styles ["heading",]
+          }
+
+          styles ["flat",]
+        }
+
+        Stack stack_view{
+          vexpand: true;
+          transition-type: slide_up_down;
+        }
+      };
   }
 }
 
@@ -74,6 +80,16 @@ menu primary_menu {
     item {
       label: _("_About Tienda");
       action: "app.about";
+    }
+
+    item {
+      label: _("_Logout");
+      action: "app.logout";
+    }
+
+    item {
+      label: _("_Exit");
+      action: "app.exit_app";
     }
   }
 }

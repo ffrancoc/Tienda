@@ -3,9 +3,9 @@ using Adw 1;
 
 template TiendaUserView : Gtk.Box{
   orientation: vertical;
-  margin-end: 10;
-  margin-bottom: 10;
-  margin-start: 10;
+  margin-end: 20;
+  margin-bottom: 20;
+  margin-start: 20;
 
   CenterBox {
     orientation: horizontal;
@@ -61,7 +61,9 @@ template TiendaUserView : Gtk.Box{
 
   ScrolledWindow {
     vexpand: true;
-    TreeView treeview{}
+    TreeView treeview{
+      enable-grid-lines: both;
+    }
   }
 
   Separator {
@@ -70,13 +72,24 @@ template TiendaUserView : Gtk.Box{
       margin-bottom: 5;
   }
 
-  Label lbl_treeview_info {
-    xalign: 0;
-    margin-end: 10;
-    margin-bottom: 10;
-    margin-start: 10;
-    styles ["caption-heading"]
+  Box {
+    orientation: horizontal;
+    spacing: 5;
+
+    Label lbl_treeview_info {
+      xalign: 0;
+      hexpand: true;
+      margin-end: 10;
+      margin-bottom: 10;
+      margin-start: 10;
+      styles ["caption-heading"]
+    }
+
+    Spinner spinn_progress {
+      spinning: false;
+    }
   }
+
   styles ["card"]
 }
 
