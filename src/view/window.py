@@ -19,7 +19,7 @@
 
 import datetime
 from gi.repository import Adw
-from gi.repository import Gtk
+from gi.repository import Gtk, GObject
 from .database import *
 from .home import TiendaHomeView
 from .user import TiendaUserView
@@ -30,20 +30,23 @@ class TiendaWindow(Adw.ApplicationWindow):
 
     # Widgets de la interfaz
     # GUI widgets
-    btn_home          = Gtk.Template.Child()
-    btn_users         = Gtk.Template.Child()
-    lbl_currentuser   = Gtk.Template.Child()
-    stack_view        = Gtk.Template.Child()
+    flap            = Gtk.Template.Child()
+    btn_menu        = Gtk.Template.Child()
+    btn_home        = Gtk.Template.Child()
+    btn_users       = Gtk.Template.Child()
+    lbl_currentuser = Gtk.Template.Child()
+    stack_view      = Gtk.Template.Child()
+
+
+    @Gtk.Template.Callback()
+    def on_show_sidebar(self, button):
+        self.flap.set_reveal_flap(True)
 
 
     # Función para mostrar la vista home
     # Function to show home view
     def on_show_home_view(self, button, n_press, x, y):
         self.stack_view.set_visible_child_name('home-view')
-        # Eliminar los estilos css del botón
-        # Delete css styles from button
-        self.btn_home.get_style_context().add_class('sidebar-button-selected')
-        self.btn_users.get_style_context().remove_class('sidebar-button-selected')
 
 
     # Función para mostrar la vista usuario
@@ -51,22 +54,34 @@ class TiendaWindow(Adw.ApplicationWindow):
     def on_show_user_view(self, button, n_press, x, y):
         self.stack_view.set_visible_child_name('user-view')
         self.user_view.init()
-        # Eliminar los estilos css del botón
-        # Delete css styles from button
-        self.btn_users.get_style_context().add_class('sidebar-button-selected')
-        self.btn_home.get_style_context().remove_class('sidebar-button-selected')
 
 
     # Sobreescribir el evento para cerrar la ventana
     # Override close window event
     def do_close_request(self):
+        return True
+
+
+    # Funcion para cerrar la cesion y mostrar inicio de sesion
+    # Function to close session and show the login
+    def on_logout_action(self, widget, _):
         app = self.get_application()
         app.show_login_window()
-        return False
+
+
+    # Funcion para salir de la aplicacion
+    # Function to quit application
+    def on_exit_app_action(self, widget, _):
+        app = self.get_application()
+        app.close_app()
 
 
     def __init__(self, application:Gtk.Application, user:User):
         super().__init__(application=application)
+
+        # Evento para mostrar mostrar/ocultar el boton menu
+        # Event for show/hide menu button
+        self.flap.bind_property('reveal_flap', self.btn_menu, 'visible', GObject.BindingFlags.SYNC_CREATE|GObject.BindingFlags.INVERT_BOOLEAN|GObject.BindingFlags.BIDIRECTIONAL)
 
         # Agregar controlladores a los botones
         # Add button's controller
@@ -95,6 +110,10 @@ class TiendaWindow(Adw.ApplicationWindow):
         # Agregando las vistas al contenedor
         # Adding the views to container
         self.stack_view.add_named(self.home_view, 'home-view')
-        self.btn_home.get_style_context().add_class('sidebar-button-selected')
         self.stack_view.add_named(self.user_view, 'user-view')
+
+        # Agregar acciones y eventos al menu
+        # Add actions and events to menu
+        self.get_application().create_action('logout', self.on_logout_action, ['<control>e'])
+        self.get_application().create_action('exit_app', self.on_exit_app_action, ['<control>w'])
             
