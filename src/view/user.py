@@ -17,8 +17,9 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+import threading
 from gi.repository import Adw
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 from .database import *
 
 @Gtk.Template(resource_path='/com/github/ffrancoc/Tienda/gtk/user-view.ui')
@@ -28,6 +29,7 @@ class TiendaUserView(Gtk.Box):
     # Widgets de la interfaz
     # GUI widgets
     treeview          = Gtk.Template.Child()
+    spinn_progress    = Gtk.Template.Child()
     lbl_treeview_info = Gtk.Template.Child()
 
 
@@ -35,32 +37,55 @@ class TiendaUserView(Gtk.Box):
     # Function to reload the users
     @Gtk.Template.Callback()
     def on_reload_treeview(self, button):
-        self.treemodel.clear()
+        self.treeview.set_model(None)
         self.init()
+
+
+    # Funcion para actualizar la interfaz
+    # Function to update GUI
+    def _on_idle(self, treemodel):
+        self.treeview.set_model(treemodel)
+
+        # Actualizar la etiqueta con el numero de registros
+        # Update tag count register
+        self.lbl_treeview_info.set_label(_('%d users found' % len(treemodel)))
+        self.is_loading = False
+        self.spinn_progress.set_spinning(False)
+        return GLib.SOURCE_REMOVE
+
+
+    # Funcion a executar en el hilo
+    # Function to execute in thread
+    def _thread_function(self):
+        treemodel = Gtk.ListStore(int, str, str, int)
+        users = session.query(User).all()
+        for user in users:
+            last_session = user.last_session.strftime("%Y-%m-%d, %H:%M:%S") if user.last_session else ''
+            treemodel.append([user.id, user.username, last_session, user.status])
+
+        GLib.idle_add(self._on_idle, treemodel)
+
+
+    # Crear un nuevo hilo
+    # Create a new thread
+    def load_async(self):
+        thread = threading.Thread(target=self._thread_function)
+        thread.daemon=True
+        thread.start()
+        self.is_loading = True
+        self.spinn_progress.set_spinning(True)
 
 
     # Función para cargar los usuarios
     # Function to load the users
     def init(self):
-        # Si el modelo esta vacio entonces consultar y cargar los usuarios
-        # If the model is empty then try get and load the users
-        if len(self.treemodel) == 0:
-            users = session.query(User).all()
-            for user in users:
-                last_session = user.last_session.strftime("%Y-%m-%d, %H:%M:%S") if user.last_session else ''
-                self.treemodel.append([user.id, user.username, last_session, user.status])
-            # Actualizar la etiqueta con el numero de registros
-            # Update tag count register
-            self.lbl_treeview_info.set_label(_('%d users found' % len(self.treemodel)))
+        if not self.is_loading and not self.treeview.get_model():
+            self.load_async()
 
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
-        # Creación y asignación del modelo
-        # Model creation and assignment it
-        self.treemodel = Gtk.ListStore(int, str, str, int)
-        self.treeview.set_model(self.treemodel)
+        self.is_loading = False
 
         # Creación de las columnas para el treeview
         # Creation the columns for the treeview
